@@ -24,12 +24,14 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-	player.cpp 
+	player.cpp \
+	mediaapp.cpp
 
 
 	
 HEADERS += \
-	player.h
+	player.h \
+	mediaapp.h 
 
 	
 

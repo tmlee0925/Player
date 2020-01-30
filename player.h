@@ -21,32 +21,41 @@
 
 #include <QTimer>
 #include <QTime>
-#include <QLabel>
-
-
-#ifdef GST_USE
 #include <QGst/Pipeline>
 #include <QGst/Ui/VideoWidget>
 
-#else
-#include <QWidget>
-#endif
-#define ERROR_DELAY 1000
-class Player 
-#ifdef GST_USE
-	: public QGst::Ui::VideoWidget
-#else
-	: public QWidget
-
-#endif
+class Player : public QGst::Ui::VideoWidget
 {
     Q_OBJECT
 public:
     Player(QWidget *parent = 0);
     ~Player();
 
+    void setUri(const QString & uri);
 
+    QTime position() const;
+    void setPosition(const QTime & pos);
+    int volume() const;
 
+    QTime length() const;
+    QGst::State state() const;
+
+public Q_SLOTS:
+    void play();
+    void pause();
+    void stop();
+    void setVolume(int volume);
+
+Q_SIGNALS:
+    void positionChanged();
+    void stateChanged();
+
+private:
+    void onBusMessage(const QGst::MessagePtr & message);
+    void handlePipelineStateChange(const QGst::StateChangedMessagePtr & scm);
+
+    QGst::PipelinePtr m_pipeline;
+    QTimer m_positionTimer;
 };
 
 #endif
